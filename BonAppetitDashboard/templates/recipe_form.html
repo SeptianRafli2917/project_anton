@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Bon appétit{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card bg-dark">
+            <div class="card-header">
+                <h2 class="mb-0">{{ title }}</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Title Field -->
+                            <div class="mb-3">
+                                {{ form.title.label(class="form-label") }}
+                                {% if form.title.errors %}
+                                    {{ form.title(class="form-control is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.title.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.title(class="form-control") }}
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Description Field -->
+                            <div class="mb-3">
+                                {{ form.description.label(class="form-label") }}
+                                {% if form.description.errors %}
+                                    {{ form.description(class="form-control is-invalid", rows=3) }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.description.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.description(class="form-control", rows=3) }}
+                                {% endif %}
+                                <small class="text-muted">Brief description of the recipe (optional)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <!-- Category Field -->
+                            <div class="mb-3">
+                                {{ form.category.label(class="form-label") }}
+                                {% if form.category.errors %}
+                                    {{ form.category(class="form-select is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.category.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.category(class="form-select") }}
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Image Field -->
+                            <div class="mb-3">
+                                {{ form.image.label(class="form-label") }}
+                                {% if form.image.errors %}
+                                    {{ form.image(class="form-control is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.image.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.image(class="form-control") }}
+                                {% endif %}
+                                <small class="text-muted">Upload an image of the dish (optional)</small>
+                            </div>
+                            
+                            <!-- Current Image Preview (for edit mode) -->
+                            {% if recipe and recipe.image_url %}
+                            <div class="mb-3">
+                                <label class="form-label">Current Image</label>
+                                <img src="{{ recipe.image_url }}" class="img-fluid rounded" alt="Current recipe image">
+                                <small class="d-block text-muted mt-1">Upload a new image to replace this one</small>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <!-- Ingredients Field -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.ingredients.label(class="form-label") }}
+                                {% if form.ingredients.errors %}
+                                    {{ form.ingredients(class="form-control is-invalid", rows=10) }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.ingredients.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.ingredients(class="form-control", rows=10) }}
+                                {% endif %}
+                                <small class="text-muted">Enter one ingredient per line (e.g., "2 cups flour")</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Steps Field -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.steps.label(class="form-label") }}
+                                {% if form.steps.errors %}
+                                    {{ form.steps(class="form-control is-invalid", rows=10) }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.steps.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.steps(class="form-control", rows=10) }}
+                                {% endif %}
+                                <small class="text-muted">Enter one step per line (e.g., "Preheat oven to 350°F")</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <a href="{{ url_for('recipe_list') }}" class="btn btn-outline-secondary">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

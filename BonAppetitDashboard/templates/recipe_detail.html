@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ recipe.title }} - Bon appétit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- Recipe Header -->
+        <div class="mb-4">
+            <h1 class="mb-2">{{ recipe.title }}</h1>
+            <div class="mb-3">
+                {% if recipe.category %}
+                <span class="badge bg-primary me-2">{{ recipe.category.name }}</span>
+                {% endif %}
+                <small class="text-muted">
+                    <i class="fas fa-calendar-alt me-1"></i> Added: {{ recipe.created_at.strftime('%b %d, %Y') }}
+                    {% if recipe.updated_at != recipe.created_at %}
+                    <span class="ms-2">
+                        <i class="fas fa-edit me-1"></i> Updated: {{ recipe.updated_at.strftime('%b %d, %Y') }}
+                    </span>
+                    {% endif %}
+                </small>
+            </div>
+            
+            <!-- Description -->
+            {% if recipe.description %}
+            <p class="lead">{{ recipe.description }}</p>
+            <hr>
+            {% endif %}
+        </div>
+        
+        <!-- Recipe Image on Mobile -->
+        <div class="d-md-none mb-4">
+            {% if recipe.image_url %}
+            <img src="{{ recipe.image_url }}" class="img-fluid rounded" alt="{{ recipe.title }}">
+            {% else %}
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-center p-5">
+                <i class="fas fa-utensils fa-5x text-light"></i>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Recipe Content -->
+        <div class="row mb-5">
+            <div class="col-md-5">
+                <div class="card bg-dark h-100">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-shopping-basket me-2"></i>Ingredients</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for ingredient in recipe.ingredients_list() %}
+                            <li class="list-group-item bg-transparent">
+                                <i class="fas fa-check-circle text-success me-2"></i>{{ ingredient }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-7 mt-4 mt-md-0">
+                <div class="card bg-dark h-100">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-list-ol me-2"></i>Preparation Steps</h4>
+                    </div>
+                    <div class="card-body">
+                        <ol class="ps-3">
+                            {% for step in recipe.steps_list() %}
+                            <li class="mb-3">{{ step }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recipe Actions -->
+        <div class="d-flex gap-2 mb-5">
+            <a href="{{ url_for('recipe_list') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Recipes
+            </a>
+            <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}" class="btn btn-primary">
+                <i class="fas fa-edit me-2"></i>Edit Recipe
+            </a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="fas fa-trash-alt me-2"></i>Delete Recipe
+            </button>
+        </div>
+    </div>
+    
+    <!-- Recipe Image Sidebar -->
+    <div class="col-md-4 d-none d-md-block">
+        {% if recipe.image_url %}
+        <img src="{{ recipe.image_url }}" class="img-fluid rounded mb-3" alt="{{ recipe.title }}">
+        {% else %}
+        <div class="bg-secondary rounded d-flex align-items-center justify-content-center p-5 mb-3" style="height: 300px;">
+            <i class="fas fa-utensils fa-5x text-light"></i>
+        </div>
+        {% endif %}
+        
+        <!-- Print Recipe Button -->
+        <button class="btn btn-outline-light w-100 mb-3" onclick="window.print()">
+            <i class="fas fa-print me-2"></i>Print Recipe
+        </button>
+        
+        <!-- Share Recipe -->
+        <div class="card bg-dark mb-3">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-share-alt me-2"></i>Share Recipe</h5>
+            </div>
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="text" id="recipe-url" class="form-control" value="{{ request.url }}" readonly>
+                    <button class="btn btn-outline-primary" type="button" onclick="copyRecipeUrl()">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the recipe <strong>{{ recipe.title }}</strong>? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete Recipe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyRecipeUrl() {
+    const urlInput = document.getElementById('recipe-url');
+    urlInput.select();
+    document.execCommand('copy');
+    
+    // Show a toast or some notification
+    alert('Recipe URL copied to clipboard!');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,77 @@
+/* Custom styles for Bon appétit Recipe Manager */
+
+/* Recipe card hover effect */
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Recipe thumbnail images */
+.recipe-thumbnail {
+    height: 180px;
+    object-fit: cover;
+}
+
+/* Recipe detail page styling */
+.ingredient-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ingredient-list li:last-child {
+    border-bottom: none;
+}
+
+/* Print styles - hide navigation elements when printing */
+@media print {
+    nav, footer, .btn, form, .card-footer {
+        display: none !important;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    body {
+        font-size: 12pt;
+        color: #000;
+        background-color: #fff;
+    }
+    
+    .card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+    }
+    
+    .card-header {
+        background-color: #f8f9fa !important;
+        color: #000 !important;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: #000 !important;
+    }
+}
+
+/* Make sure search form is responsive */
+@media (max-width: 576px) {
+    .navbar .d-flex {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* Custom styles for form elements */
+textarea.form-control {
+    min-height: 120px;
+}
+
+/* Highlight active category in sidebar */
+.list-group-item.active {
+    font-weight: bold;
+}

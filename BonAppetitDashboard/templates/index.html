@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Bon appétit - Recipe Manager{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-md-8 offset-md-2 text-center">
+        <h1 class="display-4 mb-4">Welcome to Bon appétit</h1>
+        <p class="lead">Your personal recipe collection manager</p>
+        <p class="mb-4">Store, search, and manage your favorite cooking recipes all in one place.</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a href="{{ url_for('recipe_list') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                <i class="fas fa-list me-2"></i>Browse Recipes
+            </a>
+            <a href="{{ url_for('new_recipe') }}" class="btn btn-outline-light btn-lg px-4">
+                <i class="fas fa-plus me-2"></i>Add New Recipe
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Recipe Categories -->
+{% if categories %}
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="border-bottom pb-2 mb-4">Recipe Categories</h2>
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                <a href="{{ url_for('recipe_list', category=category.id) }}" class="text-decoration-none">
+                    <div class="card h-100 text-center shadow-sm hover-card">
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <div>
+                                <i class="fas fa-tag fa-2x mb-3 text-primary"></i>
+                                <h5 class="card-title">{{ category.name }}</h5>
+                                <p class="card-text text-muted">{{ category.recipes|length }} recipes</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+            
+            <!-- Add Category Card -->
+            <div class="col-md-3 col-sm-6 mb-4">
+                <a href="{{ url_for('manage_categories') }}" class="text-decoration-none">
+                    <div class="card h-100 text-center shadow-sm hover-card bg-dark">
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <div>
+                                <i class="fas fa-plus-circle fa-2x mb-3 text-primary"></i>
+                                <h5 class="card-title">Manage Categories</h5>
+                                <p class="card-text text-muted">Add or remove categories</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Recent Recipes -->
+<div class="row">
+    <div class="col-12">
+        <h2 class="border-bottom pb-2 mb-4">Recent Recipes</h2>
+        
+        {% if recipes %}
+        <div class="row">
+            {% for recipe in recipes %}
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    {% if recipe.image_url %}
+                    <img src="{{ recipe.image_url }}" class="card-img-top recipe-thumbnail" alt="{{ recipe.title }}">
+                    {% else %}
+                    <div class="card-img-top recipe-thumbnail d-flex align-items-center justify-content-center bg-secondary">
+                        <i class="fas fa-utensils fa-3x text-light"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ recipe.title }}</h5>
+                        <p class="card-text small text-muted mb-2">
+                            {% if recipe.category %}
+                            <span class="badge bg-primary">{{ recipe.category.name }}</span>
+                            {% endif %}
+                            <span class="ms-2">
+                                <i class="fas fa-calendar-alt"></i> 
+                                {{ recipe.created_at.strftime('%b %d, %Y') }}
+                            </span>
+                        </p>
+                        <p class="card-text small">
+                            {{ recipe.description[:100] ~ '...' if recipe.description and recipe.description|length > 100 else recipe.description or 'No description available.' }}
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="btn btn-outline-primary btn-sm">
+                            View Recipe
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-3">
+            <a href="{{ url_for('recipe_list') }}" class="btn btn-outline-light">View All Recipes</a>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>No recipes yet! <a href="{{ url_for('new_recipe') }}" class="alert-link">Add your first recipe</a>.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
